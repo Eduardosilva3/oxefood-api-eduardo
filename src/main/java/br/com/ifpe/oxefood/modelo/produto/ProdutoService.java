@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
+import br.com.ifpe.oxefood.modelo.entregador.Entregador;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,6 +34,16 @@ public class ProdutoService {
 public Produto obterPorID(Long id) {
 
     return repository.findById(id).orElse(null);
+}
+
+@Transactional
+public void delete(Long id) {
+
+    Produto produto = repository.findById(id).get();
+    produto.setHabilitado(Boolean.FALSE);
+    produto.setVersao(produto.getVersao() + 1);
+
+    repository.save(produto);
 }
 
 }
