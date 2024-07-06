@@ -5,14 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
@@ -50,6 +43,15 @@ public class ClienteController {
 
         return new ResponseEntity<Object>(cliente, HttpStatus.OK);
 
+    }
+
+
+    @Operation(summary = "Serviço responsável por atualizar um cliente no sistema pelo identificador.", description = "Exemplo de descrição de um endpoint responsável por atualizar um cliente no sistema pelo identificador.")
+    @PutMapping("/{id}")
+    public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest request) {
+
+        clienteService.update(id, request.build());
+        return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "Serviço responsável por deletar um cliente no sistema pelo identificador.", description = "Exemplo de descrição de um endpoint responsável por deletar um cliente no sistema pelo identificador.")

@@ -19,7 +19,7 @@ public class ProdutoRequest  {
     private Integer tempoEntregaMinimo;
     private Integer tempoEntregaMaximo;
 
-    public Produto builder(){
+    public Produto build(){
         return Produto.builder()
         .codigo(codigo)
         .descricao(descricao)

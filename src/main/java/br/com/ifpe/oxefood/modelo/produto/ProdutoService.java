@@ -36,6 +36,25 @@ public Produto obterPorID(Long id) {
     return repository.findById(id).orElse(null);
 }
 
+
+    @Transactional
+    public void update(Long id, Produto produtoAleterado) {
+
+        Produto produto = repository.findById(id).get();
+
+
+
+        produto.setCodigo(produtoAleterado.getCodigo());
+        produto.setDescricao(produtoAleterado.getDescricao());
+        produto.setTitulo(produtoAleterado.getTitulo());
+        produto.setValorUnitario(produtoAleterado.getValorUnitario());
+        produto.setTempoEntregaMaximo(produtoAleterado.getTempoEntregaMaximo());
+        produto.setTempoEntregaMinimo(produtoAleterado.getTempoEntregaMinimo());
+
+        produto.setVersao(produto.getVersao() + 1);
+        repository.save(produto);
+    }
+
 @Transactional
 public void delete(Long id) {
 
