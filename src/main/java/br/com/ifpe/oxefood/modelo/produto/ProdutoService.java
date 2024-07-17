@@ -6,8 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import br.com.ifpe.oxefood.modelo.cliente.Cliente;
-import br.com.ifpe.oxefood.modelo.entregador.Entregador;
+
 import jakarta.transaction.Transactional;
 
 @Service
@@ -50,6 +49,7 @@ public Produto obterPorID(Long id) {
         produto.setValorUnitario(produtoAleterado.getValorUnitario());
         produto.setTempoEntregaMaximo(produtoAleterado.getTempoEntregaMaximo());
         produto.setTempoEntregaMinimo(produtoAleterado.getTempoEntregaMinimo());
+        produto.setCategoria(produtoAleterado.getCategoria());
 
         produto.setVersao(produto.getVersao() + 1);
         repository.save(produto);

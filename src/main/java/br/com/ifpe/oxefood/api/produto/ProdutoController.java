@@ -2,11 +2,14 @@ package br.com.ifpe.oxefood.api.produto;
 
 import java.util.List;
 
+import javax.lang.model.element.ModuleElement.ProvidesDirective;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import br.com.ifpe.oxefood.modelo.categoriaproduto.CategoriaProdutoService;
 import br.com.ifpe.oxefood.modelo.produto.Produto;
 import br.com.ifpe.oxefood.modelo.produto.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,12 +22,18 @@ public class ProdutoController {
     @Autowired
     private ProdutoService service;
 
+    @Autowired
+    private CategoriaProdutoService categoriaProdutoService;
+
     @Operation(summary = "Serviço responsável por salvar um produto no sistema.", description = "Exemplo de descrição de um endpoint responsável por inserir um produto no sistema.")
     @PostMapping
     public ResponseEntity<Produto> save(@RequestBody ProdutoRequest request) {
 
-        Produto produto = service.save(request.build());
+        Produto produtoNovo = request.build();
+        produtoNovo.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
+        Produto produto = service.save(produtoNovo);
         return new ResponseEntity<Produto>(produto, HttpStatus.CREATED);
+ 
     }
 
     @Operation(summary = "Serviço responsável por buscar todos os produtos no sistema.", description = "Exemplo de descrição de um endpoint responsável por buscasr todos os produtos no sistema.")
@@ -49,9 +58,13 @@ public class ProdutoController {
     @PutMapping("/{id}")
     public ResponseEntity<Produto> update(@PathVariable("id") Long id, @RequestBody ProdutoRequest request) {
 
-        service.update(id, request.build());
-        return ResponseEntity.ok().build();
-    }
+       Produto produto = request.build();
+       produto.setCategoria(categoriaProdutoService.obterPorID(request.getIdCategoria()));
+       service.update(id, produto);
+      
+       return ResponseEntity.ok().build();
+   }
+
 
     @Operation(summary = "Serviço responsável por deletar um produto no sistema pelo identificador.", description = "Exemplo de descrição de um endpoint responsável por buscar um deletar no sistema pelo identificador.")
     @DeleteMapping("/{id}")
