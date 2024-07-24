@@ -30,22 +30,22 @@ public class EnderecoCliente extends EntidadeAuditavel{
    @ManyToOne
    private Cliente cliente;
 
-   @Column
+   @Column(nullable = false)
    private String rua;
 
-   @Column
+   @Column(nullable = false)
    private String numero;
 
-   @Column
+   @Column(nullable = false)
    private String bairro;
 
-   @Column
+   @Column(nullable = false)
    private String cep;
 
-   @Column
+   @Column(nullable = false)
    private String cidade;
 
-   @Column
+   @Column(nullable = false)
    private String estado;
 
    @Column
