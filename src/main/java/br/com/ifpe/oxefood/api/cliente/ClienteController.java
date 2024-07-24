@@ -66,10 +66,17 @@ public class ClienteController {
 
 
     @PostMapping("/endereco/{clienteId}")
-   public ResponseEntity<EnderecoCliente> adicionarEnderecoCliente(@PathVariable("clienteId") Long clienteId, @RequestBody @Valid EnderecoClienteRequest request) {
+    public ResponseEntity<EnderecoCliente> adicionarEnderecoCliente(@PathVariable("clienteId") Long clienteId, @RequestBody @Valid EnderecoClienteRequest request) {
 
-       EnderecoCliente endereco = clienteService.adicionarEnderecoCliente(clienteId, request.build());
-       return new ResponseEntity<EnderecoCliente>(endereco, HttpStatus.CREATED);
+        EnderecoCliente endereco = clienteService.adicionarEnderecoCliente(clienteId, request.build());
+        return new ResponseEntity<EnderecoCliente>(endereco, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{clienteId}/enderecos")
+   public ResponseEntity<List<EnderecoCliente>> buscarEnderecoCliente(@PathVariable("clienteId") Long clienteId) {
+
+         List<EnderecoCliente> enderecos = clienteService.buscarEnderecoCliente(clienteId);
+         return new ResponseEntity<List<EnderecoCliente>>(enderecos, HttpStatus.OK);
    }
 
    @PutMapping("/endereco/{enderecoId}")

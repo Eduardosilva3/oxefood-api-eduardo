@@ -126,6 +126,12 @@ public void delete(Long id) {
     repository.save(cliente);
 }
 
+public List<EnderecoCliente> buscarEnderecoCliente(Long clienteId) {
+
+    Cliente cliente = this.obterPorID(clienteId);
+    return cliente.getEnderecos();
+}
+
 
 
 }
