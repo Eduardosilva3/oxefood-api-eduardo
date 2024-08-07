@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,6 +38,11 @@ public class ClienteRequest {
    @Length(min = 8, max = 20, message = "O campo Fone tem que ter entre {min} e {max} caracteres")
    private String foneCelular;
 
+   @NotBlank(message = "O Email é de preenchimento obrigatório")
+   @Email
+   private String email;
+
+
    private String foneFixo;
 
    public Cliente build() {
@@ -45,6 +51,7 @@ public class ClienteRequest {
            .nome(nome)
            .dataNascimento(dataNascimento)
            .cpf(cpf)
+           .email(email)
            .foneCelular(foneCelular)
            .foneFixo(foneFixo)
            .build();

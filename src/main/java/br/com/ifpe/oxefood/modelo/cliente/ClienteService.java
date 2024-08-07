@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.Endereco.EnderecoCliente;
 import br.com.ifpe.oxefood.modelo.Endereco.EnderecoClienteRepository;
+import br.com.ifpe.oxefood.modelo.mensagens.EmailService;
 import br.com.ifpe.oxefood.util.exception.BadRequestException;
 import jakarta.transaction.Transactional;
 
@@ -21,6 +22,11 @@ public class ClienteService {
 
    @Autowired
    private EnderecoClienteRepository enderecoRepository;
+
+   
+    @Autowired
+    private EmailService emailService;
+
 
    @Transactional
    public Cliente save(Cliente cliente) {
@@ -34,7 +40,11 @@ public class ClienteService {
        cliente.setHabilitado(Boolean.TRUE);
        cliente.setVersao(1L);
        cliente.setDataCriacao(LocalDate.now());
-       return repository.save(cliente);
+       Cliente clienteSalvo = repository.save(cliente);
+
+       emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
+
+       return clienteSalvo;
    }
 
    public List<Cliente> listarTodos() {
