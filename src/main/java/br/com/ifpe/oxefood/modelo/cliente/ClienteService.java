@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 
 import br.com.ifpe.oxefood.modelo.Endereco.EnderecoCliente;
 import br.com.ifpe.oxefood.modelo.Endereco.EnderecoClienteRepository;
+import br.com.ifpe.oxefood.modelo.acesso.Usuario;
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.mensagens.EmailService;
 import br.com.ifpe.oxefood.util.exception.BadRequestException;
 import jakarta.transaction.Transactional;
@@ -23,29 +25,29 @@ public class ClienteService {
    @Autowired
    private EnderecoClienteRepository enderecoRepository;
 
+   @Autowired
+private UsuarioService usuarioService;
+
    
     @Autowired
     private EmailService emailService;
 
 
-   @Transactional
-   public Cliente save(Cliente cliente) {
+  @Transactional
+public Cliente save(Cliente cliente, Usuario usuarioLogado) {
 
-       Optional<Cliente> clienteExiste = repository.findByCpf(cliente.getCpf());
+    usuarioService.save(cliente.getUsuario());
+            
+    cliente.setHabilitado(Boolean.TRUE);
+    cliente.setVersao(1L);
+    cliente.setDataCriacao(LocalDate.now());
+    cliente.setCriadoPor(usuarioLogado);
 
-       if(clienteExiste.isPresent()){
-        throw new BadRequestException("Cliente já Existe!");
-       }
-
-       cliente.setHabilitado(Boolean.TRUE);
-       cliente.setVersao(1L);
-       cliente.setDataCriacao(LocalDate.now());
-       Cliente clienteSalvo = repository.save(cliente);
-
-       emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
-
-       return clienteSalvo;
-   }
+    Cliente clienteSalvo = repository.save(cliente);
+    emailService.enviarEmailConfirmacaoCadastroCliente(clienteSalvo);
+    
+    return clienteSalvo;
+}
 
    public List<Cliente> listarTodos() {
   
@@ -57,19 +59,23 @@ public Cliente obterPorID(Long id) {
     return repository.findById(id).orElse(null);
 }
 
-    @Transactional
-    public void update(Long id, Cliente clienteAlterado) {
+@Transactional
+public void update(Long id, Cliente clienteAlterado, Usuario usuarioLogado) {
 
-        Cliente cliente = repository.findById(id).get();
-        cliente.setNome(clienteAlterado.getNome());
-        cliente.setDataNascimento(clienteAlterado.getDataNascimento());
-        cliente.setCpf(clienteAlterado.getCpf());
-        cliente.setFoneCelular(clienteAlterado.getFoneCelular());
-        cliente.setFoneFixo(clienteAlterado.getFoneFixo());
+    Cliente cliente = repository.findById(id).get();
+    cliente.setNome(clienteAlterado.getNome());
+    cliente.setDataNascimento(clienteAlterado.getDataNascimento());
+    cliente.setCpf(clienteAlterado.getCpf());
+    cliente.setFoneCelular(clienteAlterado.getFoneCelular());
+    cliente.setFoneFixo(clienteAlterado.getFoneFixo());
+    
+    cliente.setVersao(cliente.getVersao() + 1);
+    cliente.setDataUltimaModificacao(LocalDate.now());
+    cliente.setUltimaModificacaoPor(usuarioLogado);
 
-        cliente.setVersao(cliente.getVersao() + 1);
-        repository.save(cliente);
-    }
+    repository.save(cliente);
+}
+
 
 
 @Transactional

@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import br.com.ifpe.oxefood.modelo.Endereco.EnderecoCliente;
+import br.com.ifpe.oxefood.modelo.acesso.UsuarioService;
 import br.com.ifpe.oxefood.modelo.cliente.Cliente;
 import br.com.ifpe.oxefood.modelo.cliente.ClienteService;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
@@ -21,13 +23,18 @@ public class ClienteController {
     @Autowired
     private ClienteService clienteService;
 
+    @Autowired
+    private UsuarioService usuarioService;
+
+
     @Operation(summary = "Serviço responsável por salvar um cliente no sistema.", description = "Exemplo de descrição de um endpoint responsável por inserir um cliente no sistema.")
     @PostMapping
-    public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest request) {
+     public ResponseEntity<Cliente> save(@RequestBody @Valid ClienteRequest clienteRequest, HttpServletRequest request) {
 
-        Cliente cliente = clienteService.save(request.build());
+        Cliente cliente = clienteService.save(clienteRequest.build(), usuarioService.obterUsuarioLogado(request));
         return new ResponseEntity<Cliente>(cliente, HttpStatus.CREATED);
     }
+
 
     @Operation(summary = "Serviço responsável por buscar todos os cliente no sistema.", description = "Exemplo de descrição de um endpoint responsável por buscasr todos os clientes no sistema.")
     @GetMapping
@@ -50,11 +57,12 @@ public class ClienteController {
 
     @Operation(summary = "Serviço responsável por atualizar um cliente no sistema pelo identificador.", description = "Exemplo de descrição de um endpoint responsável por atualizar um cliente no sistema pelo identificador.")
     @PutMapping("/{id}")
-    public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody @Valid ClienteRequest request) {
+    public ResponseEntity<Cliente> update(@PathVariable("id") Long id, @RequestBody ClienteRequest clienteRequest, HttpServletRequest request) {
 
-        clienteService.update(id, request.build());
-        return ResponseEntity.ok().build();
+	    clienteService.update(id, clienteRequest.build(), usuarioService.obterUsuarioLogado(request));
+	    return ResponseEntity.ok().build();
     }
+
 
     @Operation(summary = "Serviço responsável por deletar um cliente no sistema pelo identificador.", description = "Exemplo de descrição de um endpoint responsável por deletar um cliente no sistema pelo identificador.")
     @DeleteMapping("/{id}")
